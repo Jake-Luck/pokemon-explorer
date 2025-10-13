@@ -1,15 +1,16 @@
 import './landing-page.scss';
+import Hero from './hero/hero';
+import Body from './body/body';
+import Footer from './footer/footer'
 
 function LandingPage() {
     return (
-        <div>
-            <header>
-                <div className="header-text">
-                    <h1>Pokémon Browser</h1>
-                    <h2>Search and find pokémon</h2>
-                </div>
-            </header>
-            <hr></hr>
+        <div className='landing-page'>
+            <Hero></Hero>
+            <hr data-testid='header-separator'></hr>
+            <Body></Body>
+            <hr data-testid='footer-separator'></hr>
+            <Footer></Footer>
         </div>
     )
 }
