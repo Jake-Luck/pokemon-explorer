@@ -1,5 +1,6 @@
+import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react';
-import LandingPage from './landing-page';
+import LandingPage from '@/app/landing-page/landing-page';
 
 describe('LandingPage', () => {
     // Unsure how to split these up? Would be more informant to split them but less performant (can't render in beforeAll)

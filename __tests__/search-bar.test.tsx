@@ -1,10 +1,12 @@
+import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import SearchBar from './search-bar';
+import SearchBar from '../src/app/landing-page/body/search-bar/search-bar';
 
 describe('SearchBar', () => {
-    it('can input text in search bar', () => {
+    it('can input text in search bar', async () => {
         render(<SearchBar />);
+        const user = userEvent.setup();
 
         const searchBar = screen.getByTestId(/search-input/)
 
@@ -12,12 +14,12 @@ describe('SearchBar', () => {
         expect(searchBar).toBeInTheDocument();
 
         // Check is selected
-        userEvent.click(searchBar)
+        await user.click(searchBar)
         expect(searchBar).toHaveFocus()
 
         // Check text has been entered
         const testString = "testing..."
-        userEvent.keyboard(testString)
+        await user.keyboard(testString)
         expect(searchBar).toHaveValue(testString)
     });
 });
