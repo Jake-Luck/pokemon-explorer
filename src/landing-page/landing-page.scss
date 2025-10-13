@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+$fonts: "Inter", sans-serif;
+
+$text-primary: #181A1B;
+$text-muted-foreground: #71717A;
+
+header {
+    height: 244px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    font-family: $fonts;
+    font-weight: 600;
+
+    h1 {
+        font-size: 60px;
+        line-height: 78px;
+        vertical-align: bottom;
+        color: $text-primary;
+        margin: 0;
+    }
+
+    h2 {
+        font-size: 30px;
+        line-height: 36px;
+        vertical-align: middle;
+        color: $text-muted-foreground;
+        margin: 0;
+    }
+}
