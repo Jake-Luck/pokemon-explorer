@@ -1,4 +1,4 @@
-import './landing-page.scss';
+import './landing-page.css';
 import Hero from './hero/hero';
 import Body from './body/body';
 import Footer from './footer/footer'

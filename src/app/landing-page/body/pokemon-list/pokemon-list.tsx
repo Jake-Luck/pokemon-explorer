@@ -1,4 +1,4 @@
-import './pokemon-list.scss';
+import './pokemon-list.css';
 
 function PokemonList() {
     return (
