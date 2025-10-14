@@ -1,3 +1,23 @@
 .pokemon-list {
     height: 1290px;
+    width: 100%;
+}
+
+.pokemon-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+
+.card {
+    width: fit-content;
+    height: fit-content;
+    padding: 0;
+}
+
+
+.image {
+    image-rendering: pixelated;
 }

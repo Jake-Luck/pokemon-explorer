@@ -1,6 +1,9 @@
+'use client'
+
 import './landing-page.css';
 import PokemonList from './pokemon-list/pokemon-list';
 import SearchBar from './search-bar/search-bar';
+import { PokemonBrief } from "./pokemon";
 import { Button } from "@/components/ui/button"
 import { ArrowLeftIcon } from "@/components/ui/icons/akar-icons-arrow-left"
 import { ArrowRightIcon } from "@/components/ui/icons/akar-icons-arrow-right";
@@ -10,13 +13,13 @@ import { useState } from 'react'
 function LandingPage() {
     const initialApiCall = 'https://pokeapi.co/api/v2/pokemon?limit=12&offset=0'
 
-    const pokemonData = useState(null)
-    const previousPageCall = useState(null)
-    const nextPageCall = useState(null)
+    const [pokemonData, setPokemonData] = useState<PokemonBrief[] | null>(null)
+    const [previousPageCall, setPreviousPageCall] = useState<string | null>(null)
+    const [nextPageCall, setNextPageCall] = useState<string | null>(null)
     getPokemonBriefData(initialApiCall).then((results) => {
-        // pokemonData = results.pokemonData
-        // previousPageCall = results.previous
-        // nextPageCall = results.next
+        setPokemonData(results.pokemonData)
+        setPreviousPageCall(results.previous)
+        setNextPageCall(results.next)
     })
 
     return (
@@ -59,13 +62,10 @@ function LandingPage() {
     )
 }
 
-function getPokemonBriefData(apiString: string):
-    Promise<{
-        pokemonData: PokemonBrief[],
-        previous: string,
-        next: string
-    }> {
 
+const searchPokemonBaseString = 'https://pokeapi.co/api/v2/pokemon/'
+type pokemonBriefApiReturn = Promise<{ pokemonData: PokemonBrief[], previous: string, next: string }>
+async function getPokemonBriefData(apiString: string): pokemonBriefApiReturn {
     const response = await fetch(apiString);
     const responseJson = await response.json();
 
@@ -73,12 +73,35 @@ function getPokemonBriefData(apiString: string):
     const next = responseJson.next
 
     // Make api call for each pokemon to get their types
-    const pokemonResults = responseJson
-    const pokemonData = responseJson.results
+    const pokemonData: PokemonBrief[] = []
+    const pokemonResults: Array<{ name: string, url: string }> = responseJson.results
+    for (const pokemon of pokemonResults) {
+        const pokemonInfo = await getPokemonBriefInfo(pokemon.name)
+        pokemonData.push(new PokemonBrief(pokemon.name, pokemonInfo.id, pokemonInfo.type1, pokemonInfo.type2, pokemonInfo.sprite))
+    }
+
+    return { pokemonData, previous, next }
 }
 
-async function getPokemonTypes(id: number): Promise<{ type1: string, type2: string }> {
+async function getPokemonBriefInfo(name: string): Promise<{ type1: string, type2: string | null, id: number, sprite: string }> {
+    const response = await fetch(searchPokemonBaseString + name)
+    const responseJson = await response.json();
 
+    const types: Array<{ type: { name: string } }> = responseJson.types
+    const type1 = types[0].type.name
+    const type2 = types.length > 1 ? types[1].type.name : null
+    const id: number = responseJson.id
+    const sprite: string = responseJson.sprites.front_default
+
+    return { type1, type2, id, sprite }
+}
+
+async function searchPokemon(search: string): pokemonBriefApiReturn {
+    const response = await fetch(searchPokemonBaseString + search)
+    const responseJson = await response.json();
+
+    const previous = responseJson.previous
+    const next = responseJson.next
 }
 
 export default LandingPage

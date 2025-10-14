@@ -7,7 +7,6 @@ import { JSX } from 'react';
 
 
 interface PokemonListProps {
-    apiCallFinished: boolean
     pokemonData: PokemonBrief[] | null
 }
 function PokemonList({ pokemonData }: PokemonListProps) {
@@ -15,25 +14,25 @@ function PokemonList({ pokemonData }: PokemonListProps) {
 
     return (
         <div className='pokemon-list'>
-            pokemonContents
+            {pokemonContents}
         </div>
     );
 }
 
-async function generatePokemonList(pokemonData: PokemonBrief[] | null): Promise<JSX.Element> {
+function generatePokemonList(pokemonData: PokemonBrief[] | null) {
     return (
         <div className='pokemon-grid'>
             {pokemonData?.map((pokemon) => (
 
-                <Card key={pokemon.id}>
-                    <Image src='' alt=''></Image>
+                <Card className='card' key={pokemon.id}>
+                    <Image className='image background-secondary' src={pokemon.sprite} alt='Image of {pokemon.name}' width={266} height={224}></Image>
                     <CardContent>
                         <CardHeader>
-                            <h3 className='pokemon-name'>pokemon.name</h3>
-                            <p className='pokemon-id'>pokemon.id</p>
+                            <h3 className='pokemon-name'>{pokemon.name}</h3>
+                            <p className='pokemon-id'>{pokemon.id}</p>
                             <div className='pokemon-types'>
-                                <Badge>pokemon.type1</Badge>
-                                {pokemon.type2 != null && <Badge>pokemon.type2</Badge>}
+                                <Badge>{pokemon.type1}</Badge>
+                                {pokemon.type2 != null && <Badge>{pokemon.type2}</Badge>}
                             </div>
                         </CardHeader>
                     </CardContent>
