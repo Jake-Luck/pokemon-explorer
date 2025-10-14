@@ -2,7 +2,7 @@ import './pokemon-list.css';
 
 function PokemonList() {
     return (
-        <div>
+        <div className='pokemon-list'>
 
         </div>
     );
