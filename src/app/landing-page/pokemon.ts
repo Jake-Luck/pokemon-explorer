@@ -1,4 +1,4 @@
-export class PokemonBrief {
+export class PokemonCard {
     name: string
     id: number
     type1: string

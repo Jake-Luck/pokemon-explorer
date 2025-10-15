@@ -4,24 +4,25 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from 'next/image';
 import { JSX } from 'react';
+import { PokemonCard } from '../pokemon';
 
 
 interface PokemonListProps {
-    pokemonData: PokemonBrief[] | null
+    pokemonData: PokemonCard[] | null
 }
 function PokemonList({ pokemonData }: PokemonListProps) {
-    const pokemonContents = pokemonData == null ? <Spinner></Spinner> : generatePokemonList(pokemonData)
+    const pokemonContents = pokemonData == null ? <Spinner className='size-[76px]'></Spinner> : generatePokemonList(pokemonData)
 
     return (
-        <div className='pokemon-list'>
+        <div className='pokemon-list inline flex items-center justify-items-center'>
             {pokemonContents}
         </div>
     );
 }
 
-function generatePokemonList(pokemonData: PokemonBrief[] | null) {
+function generatePokemonList(pokemonData: PokemonCard[] | null) {
     return (
-        <div className='pokemon-grid'>
+        <div className='grid grid-cols-4 grid-rows-3 size-full items-start justify-between justify-items-center'>
             {pokemonData?.map((pokemon) => (
 
                 <Card className='card' key={pokemon.id}>
