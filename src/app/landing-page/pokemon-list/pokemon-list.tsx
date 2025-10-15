@@ -13,7 +13,7 @@ function PokemonList({ pokemonData }: PokemonListProps) {
     const pokemonContents = pokemonData == null ? <Spinner className='size-[76px]'></Spinner> : generatePokemonList(pokemonData)
 
     return (
-        <div className='h-[1290px] w-full inline flex items-center justify-items-center'>
+        <div className='w-full inline flex items-center justify-items-center'>
             {pokemonContents}
         </div>
     );
@@ -21,7 +21,7 @@ function PokemonList({ pokemonData }: PokemonListProps) {
 
 function generatePokemonList(pokemonData: PokemonCard[] | null) {
     return (
-        <div className='grid grid-cols-4 grid-rows-3 size-full items-start justify-between justify-items-center'>
+        <div className='grid grid-cols-4 gap-y-[60px] size-full items-start justify-between justify-items-center'>
             {pokemonData?.map((pokemon) => (
 
                 <Card className='size-fit p-0 gap-0 rounded-[8px]' key={pokemon.id}>

@@ -2,7 +2,6 @@
 
 import './landing-page.css';
 import PokemonList from './pokemon-list/pokemon-list';
-import SearchBar from './search-bar/search-bar';
 import { PokemonCard } from "./pokemon";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -52,11 +51,12 @@ function LandingPage() {
         })
     }
 
-    function handleSearch(formData: FormData) {
-        console.log(formData.constructor.name)
-        const inputText = formData.get("input") as string;
+    function handleSearch(formEvent: React.FormEvent<HTMLFormElement>) {
+        formEvent.preventDefault()
         setPokemonListNull()
-        searchThenUpdateState(inputText)
+        const formData = new FormData(formEvent.currentTarget)
+        const inputText = formData.get("input") as string;
+        searchThenUpdateState(inputText.trim())
     }
 
     // runs once when component loaded
@@ -82,7 +82,7 @@ function LandingPage() {
                 <div className='w-full flex items-center justify-between'>
                     <h2 className='text-foreground text-[30px] leading-[36px] tracking-[-0.025em]'>Explore Pokémon</h2>
                     {/* On enter or click, get pokemon card data using inputted name*/}
-                    <Form action={handleSearch} className='h-[40px] flex items-center gap-[12px]'>
+                    <Form onSubmit={handleSearch} className='h-[40px] flex items-center gap-[12px]'>
                         <Input type='text' placeholder='Find Pokémon' name='input' className='text-muted-foreground w-[251px] font-[400]' data-testid='search-input'></Input>
                         <Button className='font-[500]' data-testid='search-button'>Search</Button>
                     </Form>
