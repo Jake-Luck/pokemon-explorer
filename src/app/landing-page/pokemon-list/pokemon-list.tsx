@@ -1,4 +1,3 @@
-import './pokemon-list.css';
 import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -14,7 +13,7 @@ function PokemonList({ pokemonData }: PokemonListProps) {
     const pokemonContents = pokemonData == null ? <Spinner className='size-[76px]'></Spinner> : generatePokemonList(pokemonData)
 
     return (
-        <div className='pokemon-list inline flex items-center justify-items-center'>
+        <div className='h-[1290px] w-full inline flex items-center justify-items-center'>
             {pokemonContents}
         </div>
     );
@@ -25,17 +24,19 @@ function generatePokemonList(pokemonData: PokemonCard[] | null) {
         <div className='grid grid-cols-4 grid-rows-3 size-full items-start justify-between justify-items-center'>
             {pokemonData?.map((pokemon) => (
 
-                <Card className='card' key={pokemon.id}>
-                    <Image className='image background-secondary' src={pokemon.sprite} alt='Image of {pokemon.name}' width={266} height={224}></Image>
-                    <CardContent>
-                        <CardHeader>
-                            <h3 className='pokemon-name'>{pokemon.name}</h3>
-                            <p className='pokemon-id'>{pokemon.id}</p>
-                            <div className='pokemon-types'>
-                                <Badge>{pokemon.type1}</Badge>
-                                {pokemon.type2 != null && <Badge>{pokemon.type2}</Badge>}
-                            </div>
+                <Card className='size-fit p-0 gap-0 rounded-[8px]' key={pokemon.id}>
+                    <div className="relative w-[266px] h-[224px]">
+                        <Image className='bg-secondary rounded-t-[8px] pixelated ' src={pokemon.sprite} alt='Image of {pokemon.name}' fill style={{ objectFit: "contain" }}></Image>
+                    </div>
+                    <CardContent className='flex flex-col w-[266px] h-[167px] p-0 rounded-b-[8px]'>
+                        <CardHeader className='size-fit flex flex-col p-[24px] gap-[6px]'>
+                            <h3 className='text-foreground font-[24px] leading-[32px] tracking-[-0.025em] capitalize'>{pokemon.name}</h3>
+                            <p className='text-muted-foreground font-[16px] leading-[20px]'>#{String(pokemon.id).padStart(4, '0')}</p>
                         </CardHeader>
+                        <div className='flex gap-[12px] pt-[8px] px-[24px] pb-[28px]'>
+                            <Badge className="capitalize font-[600]">{pokemon.type1}</Badge>
+                            {pokemon.type2 != null && <Badge className="capitalize font-[600]">{pokemon.type2}</Badge>}
+                        </div>
                     </CardContent>
                 </Card>
             ))}
