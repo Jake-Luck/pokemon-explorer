@@ -15,10 +15,9 @@ import { useEffect, useState } from 'react'
 type pokemonListData = { pokemonData: PokemonCard[] | null, previous: string | null, next: string | null }
 type pokemonCardData = { type1: string, type2: string | null, id: number, sprite: string }
 
+const defaultApiCall = 'https://pokeapi.co/api/v2/pokemon?limit=12&offset=0'
 function LandingPage() {
     const [pokemonList, setPokemonList] = useState<pokemonListData>({ pokemonData: null, previous: null, next: null })
-
-    const updatePokemonListState = (stateInfo: pokemonListData): void => setPokemonList(stateInfo)
 
     /**
      * Sets all values in pokemon list to null, use before search or next/previous page so page updates to loading state
@@ -31,17 +30,38 @@ function LandingPage() {
      * Calls get list data then once done, updates state with results
      * @param apiCall String to use in fetch request, i.e., 'https://pokeapi.co/api/v2/pokemon'
      */
-    function getListDataAndUpdateState(apiCall: string | null): void {
-        if (apiCall == null) return
+    function getListDataThenUpdateState(apiCall: string | null): void {
+        if (!apiCall) return
         getPokemonListData(apiCall).then((results) => {
-            updatePokemonListState(results)
+            setPokemonList(results)
         })
+    }
+
+    /**
+     * If search is a valid string then call api with it, otherwise call api with default request.
+     * Once api call is done, state is updated with the results
+     * @param search Search string to use in api call
+     */
+    function searchThenUpdateState(searchInput: string | null): void {
+        if (!searchInput) {
+            getListDataThenUpdateState(defaultApiCall);
+            return
+        }
+        searchPokemon(searchInput).then((results) => {
+            setPokemonList(results)
+        })
+    }
+
+    function handleSearch(formData: FormData) {
+        console.log(formData.constructor.name)
+        const inputText = formData.get("input") as string;
+        setPokemonListNull()
+        searchThenUpdateState(inputText)
     }
 
     // runs once when component loaded
     useEffect(() => {
-        const initialApiCall = 'https://pokeapi.co/api/v2/pokemon?limit=12&offset=0'
-        getListDataAndUpdateState(initialApiCall)
+        getListDataThenUpdateState(defaultApiCall)
     }, [])
 
     return (
@@ -62,9 +82,9 @@ function LandingPage() {
                 <div className='w-full flex items-center justify-between'>
                     <h2 className='text-foreground text-[30px] leading-[36px] tracking-[-0.025em]'>Explore Pokémon</h2>
                     {/* On enter or click, get pokemon card data using inputted name*/}
-                    <Form action={() => { return }} className='h-[40px] flex items-center gap-[12px]'>
-                        <Input type='text' placeholder='Find Pokémon' className='text-muted-foreground w-[251px] font-[400]' id='search-input' data-testid='search-input'></Input>
-                        <Button className='font-[500]' id='search-button' data-testid='search-button'>Search</Button>
+                    <Form action={handleSearch} className='h-[40px] flex items-center gap-[12px]'>
+                        <Input type='text' placeholder='Find Pokémon' name='input' className='text-muted-foreground w-[251px] font-[400]' data-testid='search-input'></Input>
+                        <Button className='font-[500]' data-testid='search-button'>Search</Button>
                     </Form>
                 </div>
 
@@ -73,12 +93,12 @@ function LandingPage() {
                 {/* pagination */}
                 <div className='flex gap-[16px]'>
                     {/* On click, get pokemon card data with previous page call*/}
-                    <Button id='back-page' data-testid='back-page' disabled={pokemonList.previous == null} onClick={() => { setPokemonListNull(); getListDataAndUpdateState(pokemonList.previous) }}>
+                    <Button disabled={pokemonList.previous == null} onClick={() => { setPokemonListNull(); getListDataThenUpdateState(pokemonList.previous) }} data-testid='back-page' >
                         <ArrowLeftIcon></ArrowLeftIcon>
                         <p>Back</p>
                     </Button>
                     {/* On click, get pokemon card data with next page call*/}
-                    <Button id='next-page' data-testid='next-page' disabled={pokemonList.next == null} onClick={() => { setPokemonListNull(); getListDataAndUpdateState(pokemonList.next) }}>
+                    <Button disabled={pokemonList.next == null} onClick={() => { setPokemonListNull(); getListDataThenUpdateState(pokemonList.next) }} data-testid='next-page'>
                         <p>Next</p>
                         <ArrowRightIcon></ArrowRightIcon>
                     </Button>
@@ -125,11 +145,12 @@ async function getPokemonListData(apiString: string): Promise<pokemonListData> {
  * @param name Pokemon name to use in api call
  * @returns A promise of the pokemon's types, id and sprite
  */
-async function getPokemonCardInfo(name: string): Promise<pokemonCardData> {
+async function getPokemonCardInfo(name: string): Promise<pokemonCardData | false> {
     const response = await fetch(searchPokemonBaseString + name)
-    const responseJson = await response.json();
 
-    // handle invalid name
+    if (!response.ok) return false
+
+    const responseJson = await response.json();
 
     const types: Array<{ type: { name: string } }> = responseJson.types
     const type1 = types[0].type.name
@@ -141,13 +162,22 @@ async function getPokemonCardInfo(name: string): Promise<pokemonCardData> {
 }
 
 async function searchPokemon(search: string): Promise<pokemonListData> {
-    const pokemonInfo = await getPokemonCardInfo(search)
-
-    // handle invalid name
-
-    const pokemonData = [new PokemonCard(search, pokemonInfo.id, pokemonInfo.type1, pokemonInfo.type2, pokemonInfo.sprite)]
     const previous = null
     const next = null
+
+    if (search == '') return getPokemonListData(defaultApiCall);
+
+    const pokemonInfo = await getPokemonCardInfo(search)
+
+    const pokemonData: Array<PokemonCard> = []
+    if (pokemonInfo == false) {
+        pokemonData.push(new PokemonCard("MissingNo", 0, "Bird", "Normal", "/missingno.png"))
+    }
+    else {
+        pokemonData.push(new PokemonCard(search, pokemonInfo.id, pokemonInfo.type1, pokemonInfo.type2, pokemonInfo.sprite))
+    }
+    // handle invalid name
+
 
     return { pokemonData, previous, next }
 }
