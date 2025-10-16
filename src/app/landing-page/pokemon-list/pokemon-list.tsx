@@ -21,7 +21,7 @@ function PokemonList({ pokemonData }: PokemonListProps) {
 
 function generatePokemonList(pokemonData: PokemonCard[] | null) {
     return (
-        <div className='grid grid-cols-4 gap-y-[60px] size-full items-start justify-between justify-items-center'>
+        <div className='grid grid-cols [grid-template-columns:repeat(auto-fit,minmax(288px,1fr))] gap-y-[60px] size-full items-start justify-between justify-items-center' >
             {pokemonData?.map((pokemon) => (
 
                 <Card className='size-fit p-0 gap-0 rounded-[8px]' key={pokemon.id}>

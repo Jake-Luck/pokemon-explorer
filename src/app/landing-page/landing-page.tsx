@@ -10,15 +10,13 @@ import { ArrowRightIcon } from "@/components/ui/icons/akar-icons-arrow-right";
 import Form from "next/form";
 
 import { useEffect, useState } from 'react'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 type pokemonListData = { pokemonData: PokemonCard[] | null, previous: string | null, next: string | null }
 type pokemonCardData = { type1: string, type2: string | null, id: number, sprite: string }
 
 const defaultApiCall = 'https://pokeapi.co/api/v2/pokemon?limit=12&offset=0'
 function LandingPage() {
-    const [pokemonList, setPokemonList] = useState<pokemonListData>({ pokemonData: null, previous: null, next: null })
-    const [listTitle, setListTitle] = useState<string>('Explore Pokémon')
-
     /**
      * Sets all values in pokemon list to null, use before search or next/previous page so page updates to loading state
      */
@@ -52,41 +50,59 @@ function LandingPage() {
         })
     }
 
+    /**
+     * Used by form to submit search data
+     * @param formEvent The form event passed on form submit
+     */
     function handleSearch(formEvent: React.FormEvent<HTMLFormElement>) {
         formEvent.preventDefault()
+
         setPokemonListNull()
         const formData = new FormData(formEvent.currentTarget)
-        const inputText = formData.get("input") as string;
-        const title = !inputText ? 'Explore Pokémon' : `Search Results for '${inputText}'`
-        setListTitle(title)
-        searchThenUpdateState(inputText.trim())
+        const inputText = (formData.get("input") as string).trim();
+        searchThenUpdateState(inputText)
+
+        const params = new URLSearchParams(searchParams)
+        params.set('search', inputText)
+        router.push(`${pathName}?${params.toString()}`)
     }
+
+    const [pokemonList, setPokemonList] = useState<pokemonListData>({ pokemonData: null, previous: null, next: null })
+    const router = useRouter()
+    const pathName = usePathname()
+    const searchParams = useSearchParams()
 
     // runs once when component loaded
     useEffect(() => {
-        getListDataThenUpdateState(defaultApiCall)
-    }, [])
+        const initialSearch = searchParams.get('search')
+        if (initialSearch) {
+            searchThenUpdateState(initialSearch)
+        }
+        else {
+            getListDataThenUpdateState(defaultApiCall)
+        }
+    }, [searchParams])
 
     return (
         <div className='landing-page flex flex-col gap-[48px] m-0'>
             {/* Hero */}
-            <div className='h-[244px] flex flex-col items-center justify-center'>
+            <div className='h-[244px] flex flex-col text-center justify-center'>
                 <div className='flex flex-col items-center justify-center gap-[8px]'>
                     <h1 className='text-primary text-[60px] leading-[78px] align-bottom margin-0'>Explore Pokémon</h1>
                     <h2 className='text-muted-foreground text-[30px] leading-[36px] align-middle margin-0 tracking-[-0.025em]'>Search and find Pokémon</h2>
                 </div>
             </div>
 
-            <hr data-testid='header-separator'></hr>
+            <hr className='' data-testid='header-separator'></hr>
 
             {/* Main Page Content */}
             <div className='flex flex-col items-center gap-[48px] pl-[10%] pr-[10%]'>
                 {/* Heading and Search */}
-                <div className='w-full flex items-center justify-between'>
-                    <h2 className='text-foreground text-[30px] leading-[36px] tracking-[-0.025em]'>{listTitle}</h2>
+                <div className='w-full flex flex-col gap-[16px] items-center justify-between sm sm:flex-row '>
+                    <h2 className='text-foreground text-[30px] leading-[36px] tracking-[-0.025em]'>{searchParams.get('search') ? `Search results for '${searchParams.get('search')}'` : 'Explore Pokémon'}</h2>
                     {/* On enter or click, get pokemon card data using inputted name*/}
                     <Form onSubmit={handleSearch} className='h-[40px] flex items-center gap-[12px]'>
-                        <Input type='text' placeholder='Find Pokémon' name='input' className='text-muted-foreground w-[251px] font-[400]' data-testid='search-input'></Input>
+                        <Input type='text' placeholder='Find Pokémon' defaultValue={searchParams.get('search') ?? ''} name='input' className='text-muted-foreground w-[251px] font-[400]' data-testid='search-input'></Input>
                         <Button className='font-[500]' data-testid='search-button'>Search</Button>
                     </Form>
                 </div>
