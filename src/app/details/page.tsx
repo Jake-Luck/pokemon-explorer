@@ -35,13 +35,13 @@ function DetailsPage() {
         <div className="flex flex-col gap-[48px]">
             {/* Top bar and top section */}
             <div>
-                <div className="h-[80px] flex bg-popover items-center">
+                <div className="h-[80px] flex bg-popover items-center justify-center sm:justify-start">
                     <h3 className="text-[24px] leading-[32px] tracking-[-0.025em] px-[64px]">Pokemon Browser</h3>
                 </div>
                 {detailsTopSection}
             </div>
 
-            <div className="flex flex-col gap-[40px] px-[140px]">
+            <div className="flex flex-col gap-[40px] px-[14px] sm:px-[140px]">
                 {detailsBody}
                 <Link href="/">
                     <Button data-testid='next-page'>
@@ -80,14 +80,14 @@ function getDetailsTopSection(pokemon: PokemonDetails) {
 function getDetailsBody(pokemon: PokemonDetails) {
     return (
         <div className="flex flex-col gap-[40px]">
-            <Card className="h-[133px] flex flex-row gap-[28px] items-center px-[48px] py-0 bg-accent">
-                <div className="relative size-[100px] border-[1px] rounded-full border-border bg-background">
+            <Card className="h-[133px] flex flex-row gap-[28px] items-center py-0 bg-accent px-[4px] sm:px-[48px] ">
+                <div className="relative size-[100px] shrink-0 border-[1px] rounded-full border-border bg-background">
                     <Image className="rounded-full pixelated" src={pokemon.pokeballSprite} alt={`Image of ${pokemon.pokeballSprite}`} fill style={{ objectFit: "contain" }}></Image>
                 </div>
                 <p className="text-[20px] font-[400] leading-[28px] text-foreground">{pokemon.flavour}</p>
             </Card>
 
-            <div className="grid grid-cols-3 grid-rows-2 gap-[24px]">
+            <div className="flex flex-col sm:grid grid-cols-3 grid-rows-2 gap-[24px]">
                 {/* Height, weight, etc. */}
                 <Card className="row-span-2 flex gap-[32px] px-[48px] py-[36px]">
                     <div className="flex flex-col gap-[12px]">
