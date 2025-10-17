@@ -1,4 +1,5 @@
 'use client'
+
 import PokemonList from './pokemon-list/pokemon-list';
 import { PokemonCard } from "./pokemon";
 import { Button } from "@/components/ui/button"
@@ -189,13 +190,13 @@ async function searchPokemon(search: string): Promise<pokemonListData> {
 	const pokemonInfo = await getPokemonCardInfo(search)
 
 	const pokemonData: Array<PokemonCard> = []
+	// If no pokemon found use missingno
 	if (pokemonInfo == false) {
 		pokemonData.push(new PokemonCard("MissingNo", 0, "Bird", "Normal", "/missingno.png"))
 	}
 	else {
 		pokemonData.push(new PokemonCard(search, pokemonInfo.id, pokemonInfo.type1, pokemonInfo.type2, pokemonInfo.sprite))
 	}
-	// handle invalid name
 
 
 	return { pokemonData, previous, next }

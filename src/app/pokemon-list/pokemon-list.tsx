@@ -1,9 +1,9 @@
 import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import Image from 'next/image';
-import { JSX } from 'react';
 import { PokemonCard } from '../pokemon';
+import Image from 'next/image';
+import Link from "next/link";
 
 
 interface PokemonListProps {
@@ -19,14 +19,18 @@ function PokemonList({ pokemonData }: PokemonListProps) {
     );
 }
 
-function generatePokemonList(pokemonData: PokemonCard[] | null) {
+function generatePokemonList(pokemonData: PokemonCard[]) {
     return (
         <div className='grid grid-cols [grid-template-columns:repeat(auto-fill,_266px)] gap-y-[60px] size-full justify-center sm:justify-between'>
-            {pokemonData?.map((pokemon) => (
-
-                <Card className='size-fit p-0 gap-0 rounded-[8px]' key={pokemon.id}>
+            {pokemonData.map((pokemon) => (
+                <Link key={pokemon.id} href={{
+                    pathname: '/details',
+                    query: { pokemonName: pokemon.name },
+                    }}
+                >
+                <Card className='size-fit p-0 gap-0 rounded-[8px]'>
                     <div className="relative w-[266px] h-[224px]">
-                        <Image className='bg-secondary rounded-t-[8px] pixelated ' src={pokemon.sprite} alt='Image of {pokemon.name}' fill style={{ objectFit: "contain" }}></Image>
+                        <Image className='bg-secondary rounded-t-[8px] pixelated ' src={pokemon.sprite} alt={`Image of ${pokemon.name}`} fill style={{ objectFit: "contain" }}></Image>
                     </div>
                     <CardContent className='flex flex-col w-[266px] h-[167px] p-0 rounded-b-[8px]'>
                         <CardHeader className='size-fit flex flex-col p-[24px] gap-[6px]'>
@@ -39,6 +43,7 @@ function generatePokemonList(pokemonData: PokemonCard[] | null) {
                         </div>
                     </CardContent>
                 </Card>
+                </Link>
             ))}
         </div>
     )
