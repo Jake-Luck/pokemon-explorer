@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "@/components/ui/icons/akar-icons-arrow-left";
 import Link from "next/link";
+import Footer from "../footer/footer";
 
 function DetailsPage() {
     const [pokemonDetails, setPokemonDetails] = useState<PokemonDetails | null>(null);
@@ -53,10 +54,7 @@ function DetailsPage() {
 
             <hr></hr>
 
-            {/* Footer */}
-            <div className='flex items-center justify-center h-[244px]'>
-                <p className='text-primary text-[18px] leading-[28px]'>Thank you for using Pokémon Browser!</p>
-            </div>
+            <Footer></Footer>
         </div>
         
     );

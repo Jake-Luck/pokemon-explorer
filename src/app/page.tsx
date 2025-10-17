@@ -10,6 +10,7 @@ import Form from "next/form";
 
 import { useEffect, useState } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import Footer from './footer/footer';
 
 type pokemonListData = { pokemonData: PokemonCard[] | null, previous: string | null, next: string | null }
 type pokemonCardData = { type1: string, type2: string | null, id: number, sprite: string }
@@ -126,10 +127,7 @@ export default function Home() {
 
             <hr data-testid='footer-separator'></hr>
 
-            {/* Footer */}
-            <div className='flex items-center justify-center h-[244px]'>
-                <p className='text-primary text-[18px] leading-[28px]'>Thank you for using Pokémon Browser!</p>
-            </div>
+            <Footer></Footer>
         </div>
     )
 }
